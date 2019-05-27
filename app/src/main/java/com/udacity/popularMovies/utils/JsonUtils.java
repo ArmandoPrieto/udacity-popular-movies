@@ -10,10 +10,6 @@ import java.util.List;
 public class JsonUtils {
 
     private static final String RESULTS = "results";
-    private static final String ID = "id";
-    private static final String TITLE = "title";
-    private static final String OVERVIEW = "overview";
-    private static final String POSTER_PATH = "poster_path";
 
     public static void parseMovieListJson(String json, List<Movie> movieList) {
         try {
@@ -22,10 +18,10 @@ public class JsonUtils {
             for(int i = 0; i< results.length(); i++){
                 JSONObject movieJsonObject = results.getJSONObject(i);
                 Movie movie = new Movie();
-                movie.setId(movieJsonObject.getInt(ID));
-                movie.setTitle(movieJsonObject.getString(TITLE));
-                movie.setOverview(movieJsonObject.getString(OVERVIEW));
-                movie.setPosterPath(movieJsonObject.getString(POSTER_PATH));
+                movie.setId(movieJsonObject.getInt(Movie.ID));
+                movie.setTitle(movieJsonObject.getString(Movie.TITLE));
+                movie.setOverview(movieJsonObject.getString(Movie.OVERVIEW));
+                movie.setPosterPath(movieJsonObject.getString(Movie.POSTER_PATH));
                 movieList.add(movie);
             }
 

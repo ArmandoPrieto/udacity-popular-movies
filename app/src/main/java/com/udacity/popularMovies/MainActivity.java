@@ -2,6 +2,7 @@ package com.udacity.popularMovies;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener {
 
     private static final String TAG = MainActivity.class.getName();
     private Context mContext;
@@ -51,11 +52,10 @@ public class MainActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
         int numberOfColumns = calculateNoOfColumns(160);
-        int imageSize = calculateImageSize();
         mLayoutManager = new GridLayoutManager(mContext, numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
         movieList = new ArrayList<>();
-        mAdapter = new MoviesAdapter(mContext,movieList);
+        mAdapter = new MoviesAdapter(mContext,movieList,this);
         mRecyclerView.setAdapter(mAdapter);
         //TODO: Add readme file
         loadMovies();
@@ -98,11 +98,6 @@ public class MainActivity extends AppCompatActivity {
         return noOfColumns;
     }
 
-    private int calculateImageSize() {
-
-        return 1;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = this.getMenuInflater();
@@ -122,5 +117,15 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onMovieClick(int position) {
+        Movie movie = movieList.get(position);
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(Movie.ID,movie.getId());
+        intent.putExtra(Movie.TITLE,movie.getTitle());
+        intent.putExtra(Movie.OVERVIEW,movie.getOverview());
+        startActivity(intent);
     }
 }
