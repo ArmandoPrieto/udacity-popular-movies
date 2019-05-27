@@ -22,6 +22,8 @@ public class JsonUtils {
                 movie.setTitle(movieJsonObject.getString(Movie.TITLE));
                 movie.setOverview(movieJsonObject.getString(Movie.OVERVIEW));
                 movie.setPosterPath(movieJsonObject.getString(Movie.POSTER_PATH));
+                movie.setReleaseDate(movieJsonObject.getString(Movie.RELEASE_DATE));
+                movie.setVoteAverage((float) movieJsonObject.getDouble(Movie.VOTE_AVERAGE));
                 movieList.add(movie);
             }
 

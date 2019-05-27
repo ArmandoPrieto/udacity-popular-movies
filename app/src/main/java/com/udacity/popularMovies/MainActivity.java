@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         intent.putExtra(Movie.ID,movie.getId());
         intent.putExtra(Movie.TITLE,movie.getTitle());
         intent.putExtra(Movie.OVERVIEW,movie.getOverview());
+        intent.putExtra(Movie.POSTER_PATH,movie.getPosterPath(Movie.IMAGE_SIZE_LARGE));
+        intent.putExtra(Movie.VOTE_AVERAGE,String.valueOf(movie.getVoteAverage()));
+        intent.putExtra(Movie.RELEASE_DATE,movie.getReleaseDate());
         startActivity(intent);
     }
 }
