@@ -9,6 +9,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -98,5 +101,26 @@ public class MainActivity extends AppCompatActivity {
     private int calculateImageSize() {
 
         return 1;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.activity_main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_sort_by_highest_rated:
+                Toast.makeText(this,"Highest rated",Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_sort_by_most_popular:
+                Toast.makeText(this,"Most popular",Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
