@@ -4,14 +4,15 @@ import com.udacity.popularMovies.model.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
 import java.util.List;
 
 public class JsonUtils {
 
     private static final String RESULTS = "results";
 
-    public static void parseMovieListJson(String json, List<Movie> movieList) {
+    public static void parseMovieListJson(String json, List<Movie> movieList, boolean clearMovieList) {
+        if (clearMovieList)
+            movieList.clear();
         try {
             JSONObject jo = new JSONObject(json);
             JSONArray results = jo.getJSONArray(RESULTS);
@@ -26,8 +27,6 @@ public class JsonUtils {
                 movie.setVoteAverage((float) movieJsonObject.getDouble(Movie.VOTE_AVERAGE));
                 movieList.add(movie);
             }
-
-
         } catch (JSONException e) {
             e.printStackTrace();
             movieList = null;

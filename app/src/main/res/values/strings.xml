@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="highest_rated">Highest rated</string>
+    <string name="highest_rated">Top rated</string>
     <string name="most_popular">Most popular</string>
     <string name="ab_description">Order by</string>
+    <string name="lb_title">Title:</string>
+    <string name="lb_release_date">Release date:</string>
+    <string name="lb_vote_avg">Vote Avg:</string>
+    <string name="loading">Loading &#8230;</string>
+    <string name="onError">Something went wrong</string>
+    <string name="movie_porter_description">movie poster image</string>
 </resources>

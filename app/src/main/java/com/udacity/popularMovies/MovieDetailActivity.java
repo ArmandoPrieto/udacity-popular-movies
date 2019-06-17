@@ -19,11 +19,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        mMovieTitle = (TextView) findViewById(R.id.tv_movie_title);
-        mMovieOverview = (TextView) findViewById(R.id.tv_movie_overview);
-        mVoteAverage = (TextView) findViewById(R.id.tv_movie_vote_average);
-        mReleaseDate = (TextView) findViewById(R.id.tv_movie_release_date);
-        mMoviePoster = (ImageView) findViewById(R.id.iv_movie_poster_detail);
+        mMovieTitle = findViewById(R.id.tv_movie_title);
+        mMovieOverview = findViewById(R.id.tv_movie_overview);
+        mVoteAverage = findViewById(R.id.tv_movie_vote_average);
+        mReleaseDate = findViewById(R.id.tv_movie_release_date);
+        mMoviePoster = findViewById(R.id.iv_movie_poster_detail);
         Intent currentIntent = getIntent();
         if(currentIntent.hasExtra(Movie.TITLE))
             mMovieTitle.setText(currentIntent.getStringExtra(Movie.TITLE));

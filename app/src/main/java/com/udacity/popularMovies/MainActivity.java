@@ -3,20 +3,15 @@ package com.udacity.popularMovies;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.GridView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,72 +21,75 @@ import com.android.volley.toolbox.Volley;
 import com.udacity.popularMovies.model.Movie;
 import com.udacity.popularMovies.utils.JsonUtils;
 import com.udacity.popularMovies.utils.NetworkUtils;
-
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener {
 
-    private static final String TAG = MainActivity.class.getName();
     private Context mContext;
-    RelativeLayout mRelativeLayout;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Movie> movieList;
+    private String sortBy = NetworkUtils.MOST_POPULAR;
+    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
+        mRecyclerView = findViewById(R.id.rv_movie_list);
         int numberOfColumns = calculateNoOfColumns(160);
         mLayoutManager = new GridLayoutManager(mContext, numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
         movieList = new ArrayList<>();
         mAdapter = new MoviesAdapter(mContext,movieList,this);
         mRecyclerView.setAdapter(mAdapter);
-        //TODO: Add readme file
-        loadMovies();
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1)) {
+                    if(page <1000)
+                        page++;
+                    loadMovies(sortBy,page);
+                }
+            }
+        });
+        loadMovies(sortBy, page);
     }
 
-    public void loadMovies(){
+    private void loadMovies(String sortBy, int page){
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
+        progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        URL url = NetworkUtils.buildUrl();
+        URL url = NetworkUtils.buildUrl(sortBy, page);
+        final boolean clearMovieList = (page == 1);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        JsonUtils.parseMovieListJson(response, movieList);
+                        JsonUtils.parseMovieListJson(response, movieList, clearMovieList);
                         mAdapter.notifyDataSetChanged();
                         progressDialog.dismiss();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onErrorResponse: Something went wrong");
-                progressDialog.dismiss();
-                // also supports Toast.LENGTH_LONG
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                 progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.onError), Toast.LENGTH_SHORT).show();
             }
         });
-        // Add the request to the RequestQueue.
         queue.add(stringRequest);
      }
 
-    public int calculateNoOfColumns(float columnWidthDp) { // For example columnWidthdp=180
+    private int calculateNoOfColumns(float columnWidthDp) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = (int) (screenWidthDp / columnWidthDp + 0.5); // +0.5 for correct rounding to int.
@@ -109,10 +107,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_sort_by_highest_rated:
-                Toast.makeText(this,"Highest rated",Toast.LENGTH_LONG).show();
+                sortBy = NetworkUtils.TOP_RATED;
+                page = 1;
+                loadMovies(sortBy,page);
+                Toast.makeText(this,getString(R.string.highest_rated),Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_sort_by_most_popular:
-                Toast.makeText(this,"Most popular",Toast.LENGTH_LONG).show();
+                sortBy = NetworkUtils.MOST_POPULAR;
+                page = 1;
+                loadMovies(sortBy,page);
+                Toast.makeText(this,getString(R.string.most_popular),Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
