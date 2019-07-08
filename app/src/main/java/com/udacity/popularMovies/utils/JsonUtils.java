@@ -1,6 +1,8 @@
 package com.udacity.popularMovies.utils;
 
 import com.udacity.popularMovies.model.Movie;
+import com.udacity.popularMovies.model.Video;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,4 +34,28 @@ public class JsonUtils {
             movieList = null;
         }
     }
+    public static void parseMovieVideoListJson(String json, List<Video> videoList) {
+       try {
+            JSONObject jo = new JSONObject(json);
+            JSONArray results = jo.getJSONArray(RESULTS);
+            for(int i = 0; i< results.length(); i++){
+                JSONObject videoJsonObject = results.getJSONObject(i);
+                Video video = new Video();
+                video.setId(videoJsonObject.getString(Video.ID));
+                video.setIso_639_1(videoJsonObject.getString(Video.ISO_639_1));
+                video.setIso_3166_1(videoJsonObject.getString(Video.ISO_3166_1));
+                video.setName(videoJsonObject.getString(Video.NAME));
+                video.setSite(videoJsonObject.getString(Video.SITE));
+                video.setSize(videoJsonObject.getInt(Video.SIZE));
+                video.setType(videoJsonObject.getString(Video.TYPE));
+                video.setKey(videoJsonObject.getString(Video.KEY));
+                videoList.add(video);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            videoList = null;
+        }
+    }
+
+
 }
