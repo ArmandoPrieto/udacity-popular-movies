@@ -8,5 +8,8 @@
     <string name="lb_vote_avg">Vote Avg:</string>
     <string name="loading">Loading &#8230;</string>
     <string name="onError">Something went wrong</string>
+    <string name="onVideoLoadingError">Something went wrong loading videos</string>
     <string name="movie_porter_description">movie poster image</string>
+    <string name="bt_watch_trailer">watch trailer</string>
+
 </resources>

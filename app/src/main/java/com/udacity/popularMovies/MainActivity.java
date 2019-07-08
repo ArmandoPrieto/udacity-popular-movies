@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         movieList = new ArrayList<>();
         mAdapter = new MoviesAdapter(mContext,movieList,this);
         mRecyclerView.setAdapter(mAdapter);
-
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         queue.add(stringRequest);
      }
 
-    private int calculateNoOfColumns(float columnWidthDp) {
+     private int calculateNoOfColumns(float columnWidthDp) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = (int) (screenWidthDp / columnWidthDp + 0.5); // +0.5 for correct rounding to int.

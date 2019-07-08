@@ -18,6 +18,7 @@ public class Movie {
     private boolean adult;
     private String overview;
     private String releaseDate;
+    private List<Video> videoList;
     private final String BASE_URL = "http://image.tmdb.org/t/p/";
     private final String[] IMAGE_SIZE = {"original","w92", "w154", "w185", "w342", "w500", "w780"};
     public static final int IMAGE_SIZE_SSMALL = 1;
@@ -164,5 +165,13 @@ public class Movie {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public List<Video> getVideoList() {
+        return videoList;
+    }
+
+    public void setVideoList(List<Video> videoList) {
+        this.videoList = videoList;
     }
 }
