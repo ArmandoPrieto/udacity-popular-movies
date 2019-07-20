@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Movie> movieList;
     private String sortBy = NetworkUtils.MOST_POPULAR;
-    private int page = 1;
+    private int moviesPage = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +53,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1)) {
-                    if(page <1000)
-                        page++;
-                    loadMovies(sortBy,page);
+                    if(moviesPage <1000)
+                        moviesPage++;
+                    loadMovies(sortBy,moviesPage);
                 }
             }
         });
-        loadMovies(sortBy, page);
+        loadMovies(sortBy, moviesPage);
     }
 
     private void loadMovies(String sortBy, int page){
@@ -91,8 +92,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
      private int calculateNoOfColumns(float columnWidthDp) {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = (int) (screenWidthDp / columnWidthDp + 0.5); // +0.5 for correct rounding to int.
-        return noOfColumns;
+        return (int) (screenWidthDp / columnWidthDp + 0.5); // +0.5 for correct rounding to int.
     }
 
     @Override
@@ -107,14 +107,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         switch(item.getItemId()) {
             case R.id.action_sort_by_highest_rated:
                 sortBy = NetworkUtils.TOP_RATED;
-                page = 1;
-                loadMovies(sortBy,page);
+                moviesPage = 1;
+                loadMovies(sortBy,moviesPage);
                 Toast.makeText(this,getString(R.string.highest_rated),Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_sort_by_most_popular:
                 sortBy = NetworkUtils.MOST_POPULAR;
-                page = 1;
-                loadMovies(sortBy,page);
+                moviesPage = 1;
+                loadMovies(sortBy,moviesPage);
                 Toast.makeText(this,getString(R.string.most_popular),Toast.LENGTH_LONG).show();
                 return true;
             default:

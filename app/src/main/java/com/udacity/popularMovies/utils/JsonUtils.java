@@ -1,6 +1,7 @@
 package com.udacity.popularMovies.utils;
 
 import com.udacity.popularMovies.model.Movie;
+import com.udacity.popularMovies.model.Review;
 import com.udacity.popularMovies.model.Video;
 
 import org.json.JSONArray;
@@ -57,5 +58,25 @@ public class JsonUtils {
         }
     }
 
+    public static void parseMovieReviewListJson(String json, List<Review> reviewList, boolean clearReviewList) {
+        if (clearReviewList)
+            reviewList.clear();
+        try {
+            JSONObject jo = new JSONObject(json);
+            JSONArray results = jo.getJSONArray(RESULTS);
+            for(int i = 0; i< results.length(); i++){
+                JSONObject reviewJsonObject = results.getJSONObject(i);
+                Review review = new Review();
+                review.setId(reviewJsonObject.getString(Review.ID));
+                review.setAuthor(reviewJsonObject.getString(Review.AUTHOR));
+                review.setContent(reviewJsonObject.getString(Review.CONTENT));
+                review.setUrl(reviewJsonObject.getString(Review.URL));
+                reviewList.add(review);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            reviewList = null;
+        }
+    }
 
 }

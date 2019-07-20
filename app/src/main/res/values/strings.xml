@@ -11,5 +11,9 @@
     <string name="onVideoLoadingError">Something went wrong loading videos</string>
     <string name="movie_porter_description">movie poster image</string>
     <string name="bt_watch_trailer">watch trailer</string>
+    <string name="lb_reviews">Reviews</string>
+    <string name="lb_videos">Videos</string>
+    <string name="play">play</string>
+
 
 </resources>

@@ -7,14 +7,16 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="false"
     android:animationCache="false"
-    android:background="#DAF3DA"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:layout_margin="5dp"
+    android:background="@drawable/videos_border">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:srcCompat="@android:drawable/ic_media_play"
+        android:contentDescription="@string/play"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />
 
@@ -22,7 +24,6 @@
         android:id="@+id/tv_trailerText"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="TextView"
         android:textSize="12sp"
         tools:layout_editor_absoluteX="65dp"
         tools:layout_editor_absoluteY="16dp" />
