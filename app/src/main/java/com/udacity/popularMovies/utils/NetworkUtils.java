@@ -10,7 +10,7 @@ public class NetworkUtils {
     private final static String PARAM_API_KEY = "api_key";
     private final static String PARAM_PAGE = "page";
     //TODO Please add API Key here
-    private final static String api_key = "";
+    private final static String api_key = "da1a7249c02c35267ec14af7c8c1d0a8";
     public final static String MOST_POPULAR = "popular";
     public final static String TOP_RATED = "top_rated";
     private final static String VIDEOS = "videos";

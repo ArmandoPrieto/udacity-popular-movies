@@ -14,6 +14,7 @@
     <string name="lb_reviews">Reviews</string>
     <string name="lb_videos">Videos</string>
     <string name="play">play</string>
-
-
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="it_is_favorite">YES</string>
+    <string name="it_is_not_favorite">YES</string>
 </resources>
