@@ -3,8 +3,13 @@ package com.udacity.popularMovies;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -18,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.udacity.popularMovies.model.Favorite;
+import com.udacity.popularMovies.model.FavoriteViewModel;
 import com.udacity.popularMovies.model.Movie;
 import com.udacity.popularMovies.utils.JsonUtils;
 import com.udacity.popularMovies.utils.NetworkUtils;
@@ -26,15 +33,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener {
-
+    private FavoriteViewModel mFavoriteViewModel;
     private Context mContext;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Movie> movieList;
+    private List<Favorite> favoriteMovieList;
     private String sortBy = NetworkUtils.MOST_POPULAR;
     private int moviesPage = 1;
-
+    public static final int DETAIL_ACTIVITY_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         mLayoutManager = new GridLayoutManager(mContext, numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
         movieList = new ArrayList<>();
+        favoriteMovieList = new ArrayList<>();
         mAdapter = new MoviesAdapter(mContext,movieList,this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -59,7 +68,28 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
                 }
             }
         });
+        mFavoriteViewModel = ViewModelProviders.of(this).get(FavoriteViewModel.class);
+        mFavoriteViewModel.getAllFavorites().observe(this, new Observer<List<Favorite>>() {
+            @Override
+            public void onChanged(@Nullable final List<Favorite> favorites) {
+                // Update the cached copy of the words in the adapter.
+                favoriteMovieList = favorites;
+            }
+        });
         loadMovies(sortBy, moviesPage);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DETAIL_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(MovieDetailActivity.EXTRA_REPLY_ID,0);
+            String title = data.getStringExtra(MovieDetailActivity.EXTRA_REPLY_TITLE);
+            Favorite favorite = new Favorite(id,title);
+            if(data.getBooleanExtra(MovieDetailActivity.EXTRA_REPLY_IS_FAVORITE, false) == true)
+                mFavoriteViewModel.insert(favorite);
+            else
+                mFavoriteViewModel.delete(favorite);
+        }
     }
 
     private void loadMovies(String sortBy, int page){
@@ -132,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         intent.putExtra(Movie.POSTER_PATH,movie.getPosterPath(Movie.IMAGE_SIZE_LARGE));
         intent.putExtra(Movie.VOTE_AVERAGE,String.valueOf(movie.getVoteAverage()));
         intent.putExtra(Movie.RELEASE_DATE,movie.getReleaseDate());
-        startActivity(intent);
+        //TODO: add extra isFavorite
+        //startActivity(intent);
+        startActivityForResult(intent, DETAIL_ACTIVITY_REQUEST_CODE);
     }
 }

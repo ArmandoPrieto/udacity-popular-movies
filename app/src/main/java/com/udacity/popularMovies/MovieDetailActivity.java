@@ -8,6 +8,9 @@ import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,11 +35,15 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
  ReviewsAdapter.ViewHolder.OnReviewListener{
 
     public static final String YOUTUBE_URL = "http://www.youtube.com/watch?v=";
+    public static final String EXTRA_REPLY_ID = "FAVORITE_REPLY_ID";
+    public static final String EXTRA_REPLY_TITLE = "FAVORITE_REPLY_TITLE";
+    public static final String EXTRA_REPLY_IS_FAVORITE = "FAVORITE_REPLY_IS_FAVORITE";
     private TextView mMovieTitle;
     private TextView mMovieOverview;
     private TextView mVoteAverage;
     private TextView mReleaseDate;
     private ImageView mMoviePoster;
+    private Button mFavoriteButton;
     private ArrayList<Video> videoList = new ArrayList<>();
     private ArrayList<Review> reviewList = new ArrayList<>();
     private RecyclerView mVideosRecyclerView;
@@ -58,13 +65,14 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         mReleaseDate = findViewById(R.id.tv_movie_release_date);
         mMoviePoster = findViewById(R.id.iv_movie_poster_detail);
         mVideosRecyclerView = findViewById(R.id.rv_movie_video_list);
+        mFavoriteButton = findViewById(R.id.bt_favorite);
         mVideosLayoutManager = new LinearLayoutManager(this);
         mVideosRecyclerView.setLayoutManager(mVideosLayoutManager);
         mReviewsRecyclerView = findViewById(R.id.rv_movie_review_list);
         mReviewsLayoutManager = new LinearLayoutManager(this);
         mReviewsRecyclerView.setLayoutManager(mReviewsLayoutManager);
 
-        Intent currentIntent = getIntent();
+        final Intent currentIntent = getIntent();
         if(currentIntent.hasExtra(Movie.TITLE))
             mMovieTitle.setText(currentIntent.getStringExtra(Movie.TITLE));
         if(currentIntent.hasExtra(Movie.OVERVIEW))
@@ -86,6 +94,17 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         mReviewsRecyclerView.setNestedScrollingEnabled(false);
         if(currentIntent.hasExtra(Movie.ID))
             loadComponents(currentIntent.getIntExtra(Movie.ID, 0));
+
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent replyIntent = new Intent();
+                setResult(RESULT_OK, replyIntent);
+                replyIntent.putExtra(EXTRA_REPLY_ID, currentIntent.getIntExtra(Movie.ID, 0));
+                replyIntent.putExtra(EXTRA_REPLY_TITLE, currentIntent.getStringExtra(Movie.TITLE));
+                //TODO: Check if it is favorite and toogle value
+                //replyIntent.putExtra(EXTRA_REPLY_IS_FAVORITE, currentIntent.getBooleanExtra(Movie.IS_FAVORITE,false));
+            }
+        });
 
     }
     private void loadComponents(int movieID) {
@@ -157,4 +176,6 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
     public void onReviewClick(int position) {
         Toast.makeText(this,"Review clicked: #"+position,Toast.LENGTH_SHORT).show();
     }
+
+
 }
