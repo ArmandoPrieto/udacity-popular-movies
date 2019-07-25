@@ -31,6 +31,7 @@ import com.udacity.popularMovies.utils.NetworkUtils;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener {
     private FavoriteViewModel mFavoriteViewModel;
@@ -82,10 +83,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == DETAIL_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(MovieDetailActivity.EXTRA_REPLY_ID,0);
-            String title = data.getStringExtra(MovieDetailActivity.EXTRA_REPLY_TITLE);
+            int id = data.getIntExtra(Movie.ID,0);
+            String title = data.getStringExtra(Movie.TITLE);
             Favorite favorite = new Favorite(id,title);
-            if(data.getBooleanExtra(MovieDetailActivity.EXTRA_REPLY_IS_FAVORITE, false) == true)
+            if(data.getBooleanExtra(Movie.IS_FAVORITE, false))
                 mFavoriteViewModel.insert(favorite);
             else
                 mFavoriteViewModel.delete(favorite);
@@ -162,8 +163,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         intent.putExtra(Movie.POSTER_PATH,movie.getPosterPath(Movie.IMAGE_SIZE_LARGE));
         intent.putExtra(Movie.VOTE_AVERAGE,String.valueOf(movie.getVoteAverage()));
         intent.putExtra(Movie.RELEASE_DATE,movie.getReleaseDate());
-        //TODO: add extra isFavorite
-        //startActivity(intent);
+        Optional<Favorite> favorite = favoriteMovieList.stream()
+                .filter( x -> x.getId() == movie.getId())
+                .findAny();
+        if(favorite.isPresent())
+            intent.putExtra(Movie.IS_FAVORITE,true);
+        else
+            intent.putExtra(Movie.IS_FAVORITE,false);
         startActivityForResult(intent, DETAIL_ACTIVITY_REQUEST_CODE);
     }
 }

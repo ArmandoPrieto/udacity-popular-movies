@@ -35,13 +35,11 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
  ReviewsAdapter.ViewHolder.OnReviewListener{
 
     public static final String YOUTUBE_URL = "http://www.youtube.com/watch?v=";
-    public static final String EXTRA_REPLY_ID = "FAVORITE_REPLY_ID";
-    public static final String EXTRA_REPLY_TITLE = "FAVORITE_REPLY_TITLE";
-    public static final String EXTRA_REPLY_IS_FAVORITE = "FAVORITE_REPLY_IS_FAVORITE";
     private TextView mMovieTitle;
     private TextView mMovieOverview;
     private TextView mVoteAverage;
     private TextView mReleaseDate;
+    private TextView mIsFavoriteTextView;
     private ImageView mMoviePoster;
     private Button mFavoriteButton;
     private ArrayList<Video> videoList = new ArrayList<>();
@@ -52,9 +50,8 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
     private RecyclerView mReviewsRecyclerView;
     private RecyclerView.Adapter mReviewsAdapter;
     private LinearLayoutManager mReviewsLayoutManager;
-    private String trailerUrl;
     private int reviewsPage = 1;
-
+    private boolean isFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         mVoteAverage = findViewById(R.id.tv_movie_vote_average);
         mReleaseDate = findViewById(R.id.tv_movie_release_date);
         mMoviePoster = findViewById(R.id.iv_movie_poster_detail);
+        mIsFavoriteTextView = findViewById(R.id.tv_is_favorite);
         mVideosRecyclerView = findViewById(R.id.rv_movie_video_list);
         mFavoriteButton = findViewById(R.id.bt_favorite);
         mVideosLayoutManager = new LinearLayoutManager(this);
@@ -83,8 +81,10 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
             mReleaseDate.setText(currentIntent.getStringExtra(Movie.RELEASE_DATE));
         if(currentIntent.hasExtra(Movie.POSTER_PATH))
             Picasso.get().load(currentIntent.getStringExtra(Movie.POSTER_PATH)).into(mMoviePoster);
-        if(currentIntent.hasExtra(Movie.POSTER_PATH))
-            Picasso.get().load(currentIntent.getStringExtra(Movie.POSTER_PATH)).into(mMoviePoster);
+        if(currentIntent.hasExtra(Movie.IS_FAVORITE)) {
+            isFavorite = currentIntent.getBooleanExtra(Movie.IS_FAVORITE, false);
+            mIsFavoriteTextView.setText(String.valueOf(isFavorite));
+        }
         mVideosAdapter = new VideosAdapter(this,videoList,this);
         mVideosRecyclerView.setAdapter(mVideosAdapter);
         mReviewsAdapter = new ReviewsAdapter(this,reviewList,this);
@@ -97,12 +97,13 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
 
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                isFavorite = !isFavorite;
+                mIsFavoriteTextView.setText(String.valueOf(isFavorite));
                 Intent replyIntent = new Intent();
                 setResult(RESULT_OK, replyIntent);
-                replyIntent.putExtra(EXTRA_REPLY_ID, currentIntent.getIntExtra(Movie.ID, 0));
-                replyIntent.putExtra(EXTRA_REPLY_TITLE, currentIntent.getStringExtra(Movie.TITLE));
-                //TODO: Check if it is favorite and toogle value
-                //replyIntent.putExtra(EXTRA_REPLY_IS_FAVORITE, currentIntent.getBooleanExtra(Movie.IS_FAVORITE,false));
+                replyIntent.putExtra(Movie.ID, currentIntent.getIntExtra(Movie.ID, 0));
+                replyIntent.putExtra(Movie.TITLE, currentIntent.getStringExtra(Movie.TITLE));
+                replyIntent.putExtra(Movie.IS_FAVORITE, isFavorite);
             }
         });
 
