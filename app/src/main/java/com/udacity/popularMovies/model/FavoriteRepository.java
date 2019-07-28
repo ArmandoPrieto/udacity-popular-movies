@@ -1,7 +1,6 @@
 package com.udacity.popularMovies.model;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
@@ -24,7 +23,6 @@ public class FavoriteRepository {
         return mAllFavorites;
     }
 
-
     void insert(Favorite favorite) {
         new insertAsyncTask(mFavoriteDao).execute(favorite);
     }
@@ -32,7 +30,6 @@ public class FavoriteRepository {
     void delete(Favorite favorite) {
         new deleteAsyncTask(mFavoriteDao).execute(favorite);
     }
-
 
     private static class insertAsyncTask extends AsyncTask<Favorite, Void, Void> {
 

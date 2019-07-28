@@ -37,16 +37,19 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.preference:preference:1.0.0'
 
 
     implementation "androidx.room:room-runtime:$roomVersion"
-    annotationProcessor "androidx.room:room-compiler:$roomVersion" // For Kotlin use kapt instead of annotationProcessor
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    // For Kotlin use kapt instead of annotationProcessor
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$roomVersion"
     // optional - RxJava support for Room

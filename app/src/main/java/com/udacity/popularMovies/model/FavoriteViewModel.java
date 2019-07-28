@@ -16,7 +16,7 @@ public class FavoriteViewModel extends AndroidViewModel {
         mRepository = new FavoriteRepository(application);
         mAllFavorites = mRepository.getAllFavorites();
     }
-
+    //TODO: If Room is used, database is not re-queried unnecessarily after rotation. Cached LiveData from ViewModel is used instead.
     public LiveData<List<Favorite>> getAllFavorites() { return mAllFavorites; }
 
     public void insert(Favorite favorite) { mRepository.insert(favorite); }

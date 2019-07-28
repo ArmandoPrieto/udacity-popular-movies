@@ -3,11 +3,10 @@ package com.udacity.popularMovies;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,7 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener {
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     private FavoriteViewModel mFavoriteViewModel;
     private Context mContext;
     private RecyclerView mRecyclerView;
@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
     private List<Favorite> favoriteMovieList;
     private String sortBy = NetworkUtils.MOST_POPULAR;
     private int moviesPage = 1;
+    private boolean showFavorites = false;
     public static final int DETAIL_ACTIVITY_REQUEST_CODE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         });
         loadMovies(sortBy, moviesPage);
     }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(R.string.sp_show_favorites)){
+            showFavorites = sharedPreferences.getBoolean(key,showFavorites);
+            //TODO:UPDATE RECYCLER VIEW
+            //(sortBy, moviesPage, showFavorites);
+        }
+    }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -148,6 +160,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
                 loadMovies(sortBy,moviesPage);
                 Toast.makeText(this,getString(R.string.most_popular),Toast.LENGTH_LONG).show();
                 return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, PreferenceActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -172,4 +188,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
             intent.putExtra(Movie.IS_FAVORITE,false);
         startActivityForResult(intent, DETAIL_ACTIVITY_REQUEST_CODE);
     }
+
+
 }
