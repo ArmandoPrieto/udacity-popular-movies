@@ -3,4 +3,4 @@
         android:id="@+id/preference_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.udacity.popularMovies.PreferenceFragment"/>
+        android:name="com.udacity.popularMovies.view.PreferenceFragment"/>

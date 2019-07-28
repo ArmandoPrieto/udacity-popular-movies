@@ -1,8 +1,10 @@
-package com.udacity.popularMovies;
+package com.udacity.popularMovies.view;
 
 import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.udacity.popularMovies.R;
 
 
 public class PreferenceFragment extends PreferenceFragmentCompat {

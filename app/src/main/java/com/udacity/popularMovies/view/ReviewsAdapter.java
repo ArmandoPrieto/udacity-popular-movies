@@ -1,4 +1,4 @@
-package com.udacity.popularMovies;
+package com.udacity.popularMovies.view;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.udacity.popularMovies.R;
 import com.udacity.popularMovies.model.Review;
 
 import java.util.List;

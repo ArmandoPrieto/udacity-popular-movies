@@ -1,11 +1,11 @@
-package com.udacity.popularMovies.model;
+package com.udacity.popularMovies.viewModel;
 
 import android.app.Application;
 import android.os.AsyncTask;
-
 import androidx.lifecycle.LiveData;
-
 import com.udacity.popularMovies.database.FavoriteRoomDatabase;
+import com.udacity.popularMovies.model.Favorite;
+import com.udacity.popularMovies.database.FavoriteDao;
 
 import java.util.List;
 

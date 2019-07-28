@@ -1,4 +1,4 @@
-package com.udacity.popularMovies;
+package com.udacity.popularMovies.view;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,8 +22,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.udacity.popularMovies.R;
 import com.udacity.popularMovies.model.Favorite;
-import com.udacity.popularMovies.model.FavoriteViewModel;
+import com.udacity.popularMovies.viewModel.FavoriteViewModel;
 import com.udacity.popularMovies.model.Movie;
 import com.udacity.popularMovies.utils.JsonUtils;
 import com.udacity.popularMovies.utils.NetworkUtils;

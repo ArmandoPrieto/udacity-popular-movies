@@ -1,9 +1,12 @@
-package com.udacity.popularMovies.model;
+package com.udacity.popularMovies.viewModel;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.udacity.popularMovies.model.Favorite;
+
 import java.util.List;
 
 public class FavoriteViewModel extends AndroidViewModel {

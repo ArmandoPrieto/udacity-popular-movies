@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MovieDetailActivity" />
-        <activity android:name=".MainActivity"
+        <activity android:name=".view.MovieDetailActivity" />
+        <activity android:name=".view.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,12 +20,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PreferenceActivity"
+            android:name=".view.PreferenceActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".view.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".view.MainActivity"/>
         </activity>
     </application>
 

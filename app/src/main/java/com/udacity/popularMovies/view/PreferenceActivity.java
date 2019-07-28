@@ -1,4 +1,4 @@
-package com.udacity.popularMovies;
+package com.udacity.popularMovies.view;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+
+import com.udacity.popularMovies.R;
 
 public class PreferenceActivity extends AppCompatActivity {
     @Override
