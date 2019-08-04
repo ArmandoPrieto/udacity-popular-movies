@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.annotation.NonNull;
 import androidx.room.PrimaryKey;
 
+import org.jetbrains.annotations.NotNull;
+
 @Entity
 public class Favorite {
 
@@ -34,11 +36,12 @@ public class Favorite {
         this.id = id;
     }
 
+    @NotNull
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@NotNull String title) {
         this.title = title;
     }
 

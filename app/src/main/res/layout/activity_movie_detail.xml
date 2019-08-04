@@ -18,15 +18,16 @@
 
             <TextView
                 android:id="@+id/tv_movie_title"
-                android:layout_width="0dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_label_title"
+                android:fontFamily="monospace"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/bt_favorite"
+                app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -34,10 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:contentDescription="@string/movie_porter_description"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,10 +71,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/textView2"
@@ -87,59 +83,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/lb_release_date"
                 app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_label_title" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_movie_title" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/lb_vote_avg"
                 app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-            <TextView
-                android:id="@+id/tv_label_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/lb_title"
-                app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
+            <ToggleButton
                 android:id="@+id/bt_favorite"
-                android:layout_width="101dp"
-                android:layout_height="54dp"
+                style="@style/toggleButton"
+                android:layout_width="46dp"
+                android:layout_height="44dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/mark_as_favorite"
-                app:layout_constraintBottom_toTopOf="@+id/tv_movie_overview"
-                app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_movie_vote_average" />
-
-            <TextView
-                android:id="@+id/tv_is_favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/it_is_favorite"
+                android:background="@drawable/favorite_button"
                 app:layout_constraintBottom_toTopOf="@+id/tv_movie_overview"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/bt_favorite"
-                app:layout_constraintTop_toBottomOf="@+id/tv_movie_vote_average" />
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -148,7 +122,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:padding="1dp"
             android:text="@string/lb_videos"
             android:textSize="18sp"
@@ -168,7 +141,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:padding="1dp"
             android:text="@string/lb_reviews"
             android:textSize="18sp"

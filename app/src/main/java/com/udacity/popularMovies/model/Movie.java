@@ -20,8 +20,8 @@ public class Movie {
     private String releaseDate;
     private List<Video> videoList;
     private boolean favorite;
-    public static final String BASE_URL = "http://image.tmdb.org/t/p/";
-    public static final String[] IMAGE_SIZE = {"original","w92", "w154", "w185", "w342", "w500", "w780"};
+    private static final String BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String[] IMAGE_SIZE = {"original","w92", "w154", "w185", "w342", "w500", "w780"};
     public static final int IMAGE_SIZE_SSMALL = 1;
     public static final int IMAGE_SIZE_SMALL = 2;
     public static final int IMAGE_SIZE_MEDIUM = 3;

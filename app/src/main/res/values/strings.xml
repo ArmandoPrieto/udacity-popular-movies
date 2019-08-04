@@ -2,7 +2,6 @@
     <string name="app_name">Popular Movies</string>
     <string name="highest_rated">Top rated</string>
     <string name="most_popular">Most popular</string>
-    <string name="ab_description">Order by</string>
     <string name="lb_title">Title:</string>
     <string name="lb_release_date">Release date:</string>
     <string name="lb_vote_avg">Vote Avg:</string>
@@ -10,18 +9,11 @@
     <string name="onError">Something went wrong</string>
     <string name="onVideoLoadingError">Something went wrong loading videos</string>
     <string name="movie_porter_description">movie poster image</string>
-    <string name="bt_watch_trailer">watch trailer</string>
     <string name="lb_reviews">Reviews</string>
     <string name="lb_videos">Videos</string>
     <string name="play">play</string>
     <string name="mark_as_favorite">Mark as favorite</string>
     <string name="it_is_favorite">YES</string>
-    <string name="it_is_not_favorite">YES</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="action_settings">Settings</string>
     <string name="menu_sort_option">Sort</string>
-    <string name="sp_show_favorites">showFavorites</string>
     <string name="favorites">Favorites</string>
 </resources>

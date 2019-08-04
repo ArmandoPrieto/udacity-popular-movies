@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/sort_options"
-        android:title="@string/menu_sort_option"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_sort_black_24dp">
-        <menu>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sort_options"
+    android:title="@string/menu_sort_option"
+    app:showAsAction="ifRoom"
+    android:icon="@drawable/ic_sort_black_24dp">
+
             <item
                 android:id="@+id/action_sort_by_most_popular"
                 android:title="@string/most_popular"
@@ -15,10 +14,10 @@
                 android:id="@+id/action_sort_by_highest_rated"
                 android:title="@string/highest_rated"
                 app:showAsAction="never" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+            <item
+                android:id="@+id/action_show_favorites"
+                android:title="@string/favorites"
+                app:showAsAction="never" />
+
+
 </menu>

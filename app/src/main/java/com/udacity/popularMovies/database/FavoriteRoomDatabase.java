@@ -1,8 +1,6 @@
 package com.udacity.popularMovies.database;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;

@@ -5,20 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
@@ -27,21 +23,22 @@ import com.udacity.popularMovies.model.Review;
 import com.udacity.popularMovies.model.Video;
 import com.udacity.popularMovies.utils.JsonUtils;
 import com.udacity.popularMovies.utils.NetworkUtils;
-
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MovieDetailActivity extends AppCompatActivity implements VideosAdapter.ViewHolder.OnVideoListener,
  ReviewsAdapter.ViewHolder.OnReviewListener{
 
-    public static final String YOUTUBE_URL = "http://www.youtube.com/watch?v=";
+    private static final String YOUTUBE_URL = "http://www.youtube.com/watch?v=";
     private TextView mMovieTitle;
     private TextView mMovieOverview;
     private TextView mVoteAverage;
     private TextView mReleaseDate;
-    private TextView mIsFavoriteTextView;
     private ImageView mMoviePoster;
-    private Button mFavoriteButton;
+    private ToggleButton mFavoriteButton;
     private ArrayList<Video> videoList = new ArrayList<>();
     private ArrayList<Review> reviewList = new ArrayList<>();
     private RecyclerView mVideosRecyclerView;
@@ -63,7 +60,6 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         mVoteAverage = findViewById(R.id.tv_movie_vote_average);
         mReleaseDate = findViewById(R.id.tv_movie_release_date);
         mMoviePoster = findViewById(R.id.iv_movie_poster_detail);
-        mIsFavoriteTextView = findViewById(R.id.tv_is_favorite);
         mVideosRecyclerView = findViewById(R.id.rv_movie_video_list);
         mFavoriteButton = findViewById(R.id.bt_favorite);
         mVideosLayoutManager = new LinearLayoutManager(this);
@@ -79,8 +75,11 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
             mMovieOverview.setText(currentIntent.getStringExtra(Movie.OVERVIEW));
         if(currentIntent.hasExtra(Movie.VOTE_AVERAGE))
             mVoteAverage.setText(currentIntent.getStringExtra(Movie.VOTE_AVERAGE));
-        if(currentIntent.hasExtra(Movie.RELEASE_DATE))
-            mReleaseDate.setText(currentIntent.getStringExtra(Movie.RELEASE_DATE));
+        if(currentIntent.hasExtra(Movie.RELEASE_DATE)){
+            LocalDate datetime = LocalDate.parse(currentIntent.getStringExtra(Movie.RELEASE_DATE),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            mReleaseDate.setText(datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
         if(currentIntent.hasExtra(Movie.POSTER_PATH))
             Picasso.get().load(
                     Movie.buildPosterPath(currentIntent.getStringExtra(Movie.POSTER_PATH),
@@ -89,7 +88,7 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         if(currentIntent.hasExtra(Movie.IS_FAVORITE)) {
             isFavorite = currentIntent.getBooleanExtra(Movie.IS_FAVORITE, false);
             favoriteInitValue = isFavorite;
-            mIsFavoriteTextView.setText(String.valueOf(isFavorite));
+            mFavoriteButton.setChecked(isFavorite);
         }
         mVideosAdapter = new VideosAdapter(this,videoList,this);
         mVideosRecyclerView.setAdapter(mVideosAdapter);
@@ -101,22 +100,18 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         if(currentIntent.hasExtra(Movie.ID))
             loadComponents(currentIntent.getIntExtra(Movie.ID, 0));
 
-        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                isFavorite = !isFavorite;
-                mIsFavoriteTextView.setText(String.valueOf(isFavorite));
-                Intent replyIntent = new Intent();
-                setResult(RESULT_OK, replyIntent);
-                replyIntent.putExtra(Movie.ID, currentIntent.getIntExtra(Movie.ID, 0));
-                replyIntent.putExtra(Movie.TITLE, currentIntent.getStringExtra(Movie.TITLE));
-                replyIntent.putExtra(Movie.OVERVIEW, currentIntent.getStringExtra(Movie.OVERVIEW));
-                replyIntent.putExtra(Movie.VOTE_AVERAGE, Float.parseFloat(currentIntent.getStringExtra(Movie.VOTE_AVERAGE)));
-                replyIntent.putExtra(Movie.POSTER_PATH, currentIntent.getStringExtra(Movie.POSTER_PATH));
-                replyIntent.putExtra(Movie.RELEASE_DATE, currentIntent.getStringExtra(Movie.RELEASE_DATE));
-                replyIntent.putExtra(Movie.IS_FAVORITE, isFavorite);
-                replyIntent.putExtra(FAVORITE_INIT_VALUE, favoriteInitValue);
-
-            }
+        mFavoriteButton.setOnClickListener(view -> {
+            isFavorite = !isFavorite;
+            Intent replyIntent = new Intent();
+            setResult(RESULT_OK, replyIntent);
+            replyIntent.putExtra(Movie.ID, currentIntent.getIntExtra(Movie.ID, 0));
+            replyIntent.putExtra(Movie.TITLE, currentIntent.getStringExtra(Movie.TITLE));
+            replyIntent.putExtra(Movie.OVERVIEW, currentIntent.getStringExtra(Movie.OVERVIEW));
+            replyIntent.putExtra(Movie.VOTE_AVERAGE, Float.parseFloat(currentIntent.getStringExtra(Movie.VOTE_AVERAGE)));
+            replyIntent.putExtra(Movie.POSTER_PATH, currentIntent.getStringExtra(Movie.POSTER_PATH));
+            replyIntent.putExtra(Movie.RELEASE_DATE, currentIntent.getStringExtra(Movie.RELEASE_DATE));
+            replyIntent.putExtra(Movie.IS_FAVORITE, isFavorite);
+            replyIntent.putExtra(FAVORITE_INIT_VALUE, favoriteInitValue);
         });
 
     }
@@ -133,20 +128,14 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         URL url = NetworkUtils.buildVideosUrl(movieId);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        JsonUtils.parseMovieVideoListJson(response, videoList);
-                        mVideosAdapter.notifyDataSetChanged();
-                        progressDialog.dismiss();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), getString(R.string.onVideoLoadingError), Toast.LENGTH_SHORT).show();
-            }
-        });
+                response -> {
+                    JsonUtils.parseMovieVideoListJson(response, videoList);
+                    mVideosAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
+                }, error -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), getString(R.string.onVideoLoadingError), Toast.LENGTH_SHORT).show();
+                });
         queue.add(stringRequest);
     }
 
@@ -160,20 +149,14 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         final boolean clearReviewList = (page == 1);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        JsonUtils.parseMovieReviewListJson(response, reviewList, clearReviewList);
-                        mReviewsAdapter.notifyDataSetChanged();
-                        progressDialog.dismiss();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), getString(R.string.onError), Toast.LENGTH_SHORT).show();
-            }
-        });
+                response -> {
+                    JsonUtils.parseMovieReviewListJson(response, reviewList, clearReviewList);
+                    mReviewsAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
+                }, error -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), getString(R.string.onError), Toast.LENGTH_SHORT).show();
+                });
         queue.add(stringRequest);
     }
 

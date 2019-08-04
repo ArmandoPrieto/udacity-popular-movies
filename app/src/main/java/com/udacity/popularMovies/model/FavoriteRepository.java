@@ -9,7 +9,7 @@ import com.udacity.popularMovies.database.FavoriteRoomDatabase;
 
 import java.util.List;
 
-public class FavoriteRepository {
+class FavoriteRepository {
     private FavoriteDao mFavoriteDao;
     private LiveData<List<Favorite>> mAllFavorites;
 

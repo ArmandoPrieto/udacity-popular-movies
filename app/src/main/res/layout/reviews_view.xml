@@ -8,8 +8,6 @@
     android:baselineAligned="false"
     android:orientation="vertical"
     android:background="@drawable/comments_border"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="10dp"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="10dp">
@@ -20,14 +18,12 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
         android:padding="1dp" />
 
     <TextView
         android:id="@+id/tv_review_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
         android:ellipsize="end"
         android:maxLines="5"
         android:padding="1dp"
