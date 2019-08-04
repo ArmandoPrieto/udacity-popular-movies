@@ -6,11 +6,13 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,19 +33,26 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
+
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.ViewHolder.OnMovieListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        OnUpdateMovieListTaskCompleted {
     private FavoriteViewModel mFavoriteViewModel;
     private Context mContext;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Movie> movieList;
-    private List<Favorite> favoriteMovieList;
+    private List<Movie> mMovieList;
+    private static List<Favorite> mFavoriteMovieList;
     private String sortBy = NetworkUtils.MOST_POPULAR;
     private int moviesPage = 1;
-    private boolean showFavorites = false;
+    private static AtomicBoolean showFavorites = new AtomicBoolean();
     public static final int DETAIL_ACTIVITY_REQUEST_CODE = 1;
 
 
@@ -56,9 +65,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         int numberOfColumns = calculateNoOfColumns(160);
         mLayoutManager = new GridLayoutManager(mContext, numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        movieList = new ArrayList<>();
-        favoriteMovieList = new ArrayList<>();
-        mAdapter = new MoviesAdapter(mContext,movieList,this);
+        mMovieList = new ArrayList<>();
+        mFavoriteMovieList = new ArrayList<>();
+        mAdapter = new MoviesAdapter(mContext, mMovieList, this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -67,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
                 if (!recyclerView.canScrollVertically(1)) {
                     if(moviesPage <1000)
                         moviesPage++;
-                    loadMovies(sortBy,moviesPage);
+                    updateMovieList();
                 }
             }
         });
@@ -76,34 +85,121 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
             @Override
             public void onChanged(@Nullable final List<Favorite> favorites) {
                 // Update the cached copy of the words in the adapter.
-                favoriteMovieList = favorites;
+                mFavoriteMovieList = favorites;
             }
         });
-        loadMovies(sortBy, moviesPage);
-    }
+        setupSharedPreferences();
+        updateMovieList();
+       }
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(R.string.sp_show_favorites)){
-            showFavorites = sharedPreferences.getBoolean(key,showFavorites);
-            //TODO:UPDATE RECYCLER VIEW
-            //(sortBy, moviesPage, showFavorites);
+        if(key.equals(getString(R.string.sp_show_favorites))){
+            showFavorites.getAndSet(sharedPreferences.getBoolean(key,showFavorites.get()));
+            updateMovieList();
         }
     }
+
+    public void updateMovieList(){
+        //moviesPage =1;
+        if(showFavorites.get()){
+             new updateMovieListAsyncTask(this).execute(mMovieList);
+        }else{
+            loadMovies(sortBy, moviesPage);
+        }
+
+    }
+
+    @Override
+    public void onUpdateMovieListTaskCompleted(List<Movie> movieList) {
+       // mMovieList.clear();
+       // mMovieList.addAll(movieList);
+        mAdapter.notifyDataSetChanged();
+    }
+
+     public class updateMovieListAsyncTask extends AsyncTask<List<Movie>, List<Movie>, List<Movie>> {
+
+        public OnUpdateMovieListTaskCompleted mListener;
+
+        public updateMovieListAsyncTask(OnUpdateMovieListTaskCompleted listener) {
+            mListener = listener;
+        }
+
+        @Override
+        protected List<Movie> doInBackground(List<Movie>... movieList) {
+            movieList[0].clear();
+           // List<Movie> test = new ArrayList<>();
+                for(Favorite favorite : mFavoriteMovieList){
+                    Movie m = new Movie();
+                    m.setId(favorite.getId());
+                    m.setTitle(favorite.getTitle());
+                    m.setOverview(favorite.getOverview());
+                    m.setVoteAverage(favorite.getVote_average());
+                    m.setReleaseDate(favorite.getRelease_date());
+                    m.setPosterPath(favorite.getPoster_path());
+                    movieList[0].add(m);
+                    //test.add(m);
+                }
+
+            return movieList[0];
+            //return test;
+        }
+
+        @Override
+        protected void onPostExecute(List<Movie> movieList) {
+            super.onPostExecute(movieList);
+            mListener.onUpdateMovieListTaskCompleted(movieList);
+
+        }
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        sharedPreferences.edit()
+                .putBoolean(getString(R.string.sp_show_favorites),showFavorites.get())
+                .apply();
+
+    }
+
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == DETAIL_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(Movie.ID,0);
-            String title = data.getStringExtra(Movie.TITLE);
-            Favorite favorite = new Favorite(id,title);
-            if(data.getBooleanExtra(Movie.IS_FAVORITE, false))
-                mFavoriteViewModel.insert(favorite);
-            else
-                mFavoriteViewModel.delete(favorite);
+           Favorite favorite = new Favorite(
+                   data.getIntExtra(Movie.ID,0),
+                   data.getStringExtra(Movie.TITLE),
+                   data.getStringExtra(Movie.OVERVIEW),
+                   data.getFloatExtra(Movie.VOTE_AVERAGE,0),
+                   data.getStringExtra(Movie.RELEASE_DATE),
+                   data.getStringExtra(Movie.POSTER_PATH));
+           boolean favoriteInitValue = data.getBooleanExtra(
+                   MovieDetailActivity.FAVORITE_INIT_VALUE, false);
+           boolean isFavorite = data.getBooleanExtra(Movie.IS_FAVORITE, false);
+           if(favoriteInitValue != isFavorite){
+                if(isFavorite) {
+                    mFavoriteViewModel.insert(favorite);
+                }else{
+                    mFavoriteViewModel.delete(favorite);
+                    if(showFavorites.get()){
+                            IntPredicate index = i -> favorite.getId() == mMovieList.get(i).getId();
+                            OptionalInt indexOpt = IntStream.range(0, mMovieList.size())
+                                .filter(index)
+                                .findFirst();
+                            if(indexOpt.isPresent()){
+                                mMovieList.remove(indexOpt.getAsInt());
+                                mAdapter.notifyItemRemoved(indexOpt.getAsInt());
+                            }
+
+                        }
+                    }
+                }
+                //updateMovieList();
+           }
         }
-    }
+
 
     private void loadMovies(String sortBy, int page){
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -118,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        JsonUtils.parseMovieListJson(response, movieList, clearMovieList);
+                        JsonUtils.parseMovieListJson(response, mMovieList, clearMovieList);
                         mAdapter.notifyDataSetChanged();
                         progressDialog.dismiss();
                     }
@@ -171,15 +267,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
 
     @Override
     public void onMovieClick(int position) {
-        Movie movie = movieList.get(position);
+        Movie movie = mMovieList.get(position);
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(Movie.ID,movie.getId());
         intent.putExtra(Movie.TITLE,movie.getTitle());
         intent.putExtra(Movie.OVERVIEW,movie.getOverview());
-        intent.putExtra(Movie.POSTER_PATH,movie.getPosterPath(Movie.IMAGE_SIZE_LARGE));
+        intent.putExtra(Movie.POSTER_PATH,movie.getPosterPath());
         intent.putExtra(Movie.VOTE_AVERAGE,String.valueOf(movie.getVoteAverage()));
         intent.putExtra(Movie.RELEASE_DATE,movie.getReleaseDate());
-        Optional<Favorite> favorite = favoriteMovieList.stream()
+        Optional<Favorite> favorite = mFavoriteMovieList.stream()
                 .filter( x -> x.getId() == movie.getId())
                 .findAny();
         if(favorite.isPresent())
@@ -189,5 +285,17 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
         startActivityForResult(intent, DETAIL_ACTIVITY_REQUEST_CODE);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unregister VisualizerActivity as an OnPreferenceChangedListener to avoid any memory leaks.
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
 
+
+}
+
+interface OnUpdateMovieListTaskCompleted{
+    void onUpdateMovieListTaskCompleted(List<Movie> movieList);
 }

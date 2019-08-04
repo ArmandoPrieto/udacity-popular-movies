@@ -52,6 +52,8 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
     private LinearLayoutManager mReviewsLayoutManager;
     private int reviewsPage = 1;
     private boolean isFavorite;
+    private boolean favoriteInitValue;
+    public static final String FAVORITE_INIT_VALUE = "favorite_init_value";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,9 +82,13 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         if(currentIntent.hasExtra(Movie.RELEASE_DATE))
             mReleaseDate.setText(currentIntent.getStringExtra(Movie.RELEASE_DATE));
         if(currentIntent.hasExtra(Movie.POSTER_PATH))
-            Picasso.get().load(currentIntent.getStringExtra(Movie.POSTER_PATH)).into(mMoviePoster);
+            Picasso.get().load(
+                    Movie.buildPosterPath(currentIntent.getStringExtra(Movie.POSTER_PATH),
+                            Movie.IMAGE_SIZE_LARGE))
+                            .into(mMoviePoster);
         if(currentIntent.hasExtra(Movie.IS_FAVORITE)) {
             isFavorite = currentIntent.getBooleanExtra(Movie.IS_FAVORITE, false);
+            favoriteInitValue = isFavorite;
             mIsFavoriteTextView.setText(String.valueOf(isFavorite));
         }
         mVideosAdapter = new VideosAdapter(this,videoList,this);
@@ -103,7 +109,13 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
                 setResult(RESULT_OK, replyIntent);
                 replyIntent.putExtra(Movie.ID, currentIntent.getIntExtra(Movie.ID, 0));
                 replyIntent.putExtra(Movie.TITLE, currentIntent.getStringExtra(Movie.TITLE));
+                replyIntent.putExtra(Movie.OVERVIEW, currentIntent.getStringExtra(Movie.OVERVIEW));
+                replyIntent.putExtra(Movie.VOTE_AVERAGE, Float.parseFloat(currentIntent.getStringExtra(Movie.VOTE_AVERAGE)));
+                replyIntent.putExtra(Movie.POSTER_PATH, currentIntent.getStringExtra(Movie.POSTER_PATH));
+                replyIntent.putExtra(Movie.RELEASE_DATE, currentIntent.getStringExtra(Movie.RELEASE_DATE));
                 replyIntent.putExtra(Movie.IS_FAVORITE, isFavorite);
+                replyIntent.putExtra(FAVORITE_INIT_VALUE, favoriteInitValue);
+
             }
         });
 

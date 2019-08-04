@@ -4,8 +4,8 @@
         app:key="filter"
         app:title="Filter">
         <SwitchPreferenceCompat
-            app:key="@String/sp_show_favorites"
-            app:title="@String/sp_text_show_favorites" />
+            app:key="@string/sp_show_favorites"
+            app:title="@string/sp_text_show_favorites" />
     </PreferenceCategory>
     <PreferenceCategory
         app:key="about"

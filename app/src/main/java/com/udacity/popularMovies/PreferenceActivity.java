@@ -1,5 +1,6 @@
 package com.udacity.popularMovies;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -27,4 +28,5 @@ public class PreferenceActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

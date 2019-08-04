@@ -19,8 +19,9 @@ public class Movie {
     private String overview;
     private String releaseDate;
     private List<Video> videoList;
-    private final String BASE_URL = "http://image.tmdb.org/t/p/";
-    private final String[] IMAGE_SIZE = {"original","w92", "w154", "w185", "w342", "w500", "w780"};
+    private boolean favorite;
+    public static final String BASE_URL = "http://image.tmdb.org/t/p/";
+    public static final String[] IMAGE_SIZE = {"original","w92", "w154", "w185", "w342", "w500", "w780"};
     public static final int IMAGE_SIZE_SSMALL = 1;
     public static final int IMAGE_SIZE_SMALL = 2;
     public static final int IMAGE_SIZE_MEDIUM = 3;
@@ -107,8 +108,11 @@ public class Movie {
         this.popularity = popularity;
     }
 
-    public String getPosterPath(int size) {
-        return this.BASE_URL+"/"+this.IMAGE_SIZE[size]+"/"+this.posterPath;
+    public String getPosterPath() {
+        return this.posterPath;
+    }
+    public static String buildPosterPath(String posterPath,int size) {
+        return BASE_URL+"/"+IMAGE_SIZE[size]+"/"+posterPath;
     }
 
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
@@ -175,5 +179,13 @@ public class Movie {
 
     public void setVideoList(List<Video> videoList) {
         this.videoList = videoList;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

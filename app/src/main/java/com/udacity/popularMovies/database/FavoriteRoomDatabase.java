@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase;
 import com.udacity.popularMovies.model.Favorite;
 import com.udacity.popularMovies.model.FavoriteDao;
 
-@Database(entities = {Favorite.class}, version = 1, exportSchema = false)
+@Database(entities = {Favorite.class}, version = 2, exportSchema = false)
 public abstract class FavoriteRoomDatabase extends RoomDatabase {
 
     public abstract FavoriteDao favoriteDao();
@@ -21,7 +21,8 @@ public abstract class FavoriteRoomDatabase extends RoomDatabase {
             synchronized (FavoriteRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            FavoriteRoomDatabase.class, "favorite_database")
+                            FavoriteRoomDatabase.class, "favorite_database_2")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

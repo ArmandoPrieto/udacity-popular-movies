@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.udacity.popularMovies.model.Movie;
-
 import java.util.List;
+
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
     private List<Movie> mMoviesDataSet;
@@ -33,12 +33,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Picasso.get().load(mMoviesDataSet.get(position).getPosterPath(Movie.IMAGE_SIZE_LARGE)).into(holder.mImageView);
+        String posterPath = Movie.buildPosterPath(mMoviesDataSet.get(position).getPosterPath(),
+                Movie.IMAGE_SIZE_LARGE);
+        Picasso.get().load(posterPath).into(holder.mImageView);
     }
 
     @Override
     public int getItemCount() {
-        return mMoviesDataSet.size();
+        return  mMoviesDataSet.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -60,5 +62,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
                 void onMovieClick(int position);
         }
     }
+
 
 }
