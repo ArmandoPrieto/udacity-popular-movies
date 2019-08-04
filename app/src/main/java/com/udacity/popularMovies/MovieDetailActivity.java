@@ -1,5 +1,6 @@
 package com.udacity.popularMovies;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,10 +25,13 @@ import com.udacity.popularMovies.model.Video;
 import com.udacity.popularMovies.utils.JsonUtils;
 import com.udacity.popularMovies.utils.NetworkUtils;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MovieDetailActivity extends AppCompatActivity implements VideosAdapter.ViewHolder.OnVideoListener,
  ReviewsAdapter.ViewHolder.OnReviewListener{
@@ -76,9 +80,16 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         if(currentIntent.hasExtra(Movie.VOTE_AVERAGE))
             mVoteAverage.setText(currentIntent.getStringExtra(Movie.VOTE_AVERAGE));
         if(currentIntent.hasExtra(Movie.RELEASE_DATE)){
-            LocalDate datetime = LocalDate.parse(currentIntent.getStringExtra(Movie.RELEASE_DATE),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            mReleaseDate.setText(datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat formatter2 = new SimpleDateFormat("dd/MM/yyyy");
+            try {
+                Date date = formatter1.parse(currentIntent.getStringExtra(Movie.RELEASE_DATE));
+                mReleaseDate.setText(formatter2.format(date));
+            } catch (ParseException e) {
+                mReleaseDate.setText(currentIntent.getStringExtra(Movie.RELEASE_DATE));
+            }
         }
         if(currentIntent.hasExtra(Movie.POSTER_PATH))
             Picasso.get().load(
@@ -115,6 +126,7 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         });
 
     }
+
     private void loadComponents(int movieID) {
         loadMovieVideos(movieID);
         loadMovieReviews(movieID,reviewsPage);
