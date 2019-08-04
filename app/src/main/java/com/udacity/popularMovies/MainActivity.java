@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.lifecycle.ViewModelProviders;
@@ -33,7 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
-
 interface OnUpdateFavoriteMovieListTaskCompleted {
     void onUpdateFavoriteMovieListTaskCompleted();
 }
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
     private List<Movie> mMovieList;
     private String sortBy = NetworkUtils.MOST_POPULAR;
     private int moviesPage = 1;
+    private final String SHOW_FAVORITE_PREFERENCE = "show_favorite_preference";
+    protected ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +79,28 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
             }
         });
         mFavoriteViewModel = ViewModelProviders.of(this).get(FavoriteViewModel.class);
+        progressDialog = new ProgressDialog(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        showFavorites.set(sharedPref.getBoolean(SHOW_FAVORITE_PREFERENCE, false));
         mFavoriteViewModel.getAllFavorites().observe(this,
-                favorites -> mFavoriteMovieList = favorites);
-        updateMovieList();
+                favorites -> {
+                                mFavoriteMovieList = favorites;
+                                updateMovieList();
+                });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(SHOW_FAVORITE_PREFERENCE, showFavorites.get());
+        editor.apply();
     }
 
     private void updateMovieList() {
@@ -133,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Vie
     }
 
     private void loadMovies(String sortBy, int page) {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);

@@ -22,11 +22,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="8dp"
                 android:fontFamily="monospace"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/bt_favorite"
                 app:layout_constraintStart_toEndOf="@+id/iv_movie_poster_detail"
                 app:layout_constraintTop_toTopOf="parent" />
 

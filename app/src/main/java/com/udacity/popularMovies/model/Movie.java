@@ -112,7 +112,7 @@ public class Movie {
         return this.posterPath;
     }
     public static String buildPosterPath(String posterPath,int size) {
-        return BASE_URL+"/"+IMAGE_SIZE[size]+"/"+posterPath;
+        return BASE_URL+IMAGE_SIZE[size]+posterPath;
     }
 
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
