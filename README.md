@@ -1,5 +1,3 @@
-# udacity-popular-movies
+# Popular-movies
 
-Please add API KEY on:
-package com.udacity.popularMovies.utils 
-    --> class NetworkUtils.java 
+This is an android app to list popular movies. 
